@@ -1,0 +1,20 @@
+server:
+  port: 8080
+
+security:
+  jwt:
+    key-store: classpath:mykeystore.jks
+    key-store-password: 46446895
+    key-pair-alias: servercert
+    key-pair-password: 46446895
+
+spring:
+  jackson:
+    serialization:
+      INDENT_OUTPUT: true
+
+#Banco de dados
+  datasource:
+    url: jdbc:postgresql://localhost:5432/myBarber
+    username: postgres
+    password: postgres
