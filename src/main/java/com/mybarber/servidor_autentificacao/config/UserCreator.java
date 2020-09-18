@@ -13,13 +13,13 @@ package com.mybarber.servidor_autentificacao.config;
   
   @Autowired private JdbcTemplate jdbcTemplate;
   
-  String salvarSenha = "UPDATE usuario set senha=? WHERE id = 1";
+  String salvarSenha = "UPDATE usuario set senha=?, email = ? WHERE id = 1";
   
   @Autowired private PasswordEncoder passwordEncoder;
   
   @PostConstruct public void init() {
   
-  jdbcTemplate.update(salvarSenha,passwordEncoder.encode("123"));
+  jdbcTemplate.update(salvarSenha,passwordEncoder.encode("123"),"julioosilva97@gmail.com");
   
   
   } }

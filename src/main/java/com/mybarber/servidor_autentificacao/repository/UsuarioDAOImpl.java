@@ -40,8 +40,6 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 ));
 
 
-
-
         if (!usuarios.isEmpty()) {
             var usuario = usuarios.get(0);
             usuario.setPermissoes(buscarPermissoes(usuario.getPerfil()));
@@ -56,17 +54,17 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     public Map<String, String> buscarBarbeariaPorLogin(String login) {
 
         var buscarBarbeariaPorLogin = """
-                select b.id id_barbearia, b.descricao descricao_barbearia
-                ,CASE WHEN @u.id<>1 THEN 'nao' ELSE 'sim' END as teste,
+                select b.id id_barbearia, b.descricao descricao_barbearia,
                 CASE WHEN @f.id is not null THEN f.id ELSE null END as id_funcionario,
                 CASE WHEN @f.id is not null THEN f.nome ELSE null END as nome_funcionario,
                 CASE WHEN @c.id is not null THEN c.id ELSE null END as id_cliente,
                 CASE WHEN @c.id is not null THEN c.nome ELSE null END as nome_cliente
                 from usuario u
-                inner join funcionario f on f.id_usuario = u.id
+                inner join gerenciar_usuario gu on gu.id_usuario = u.id
+                left join funcionario f on gu.id_funcionario = f.id
+                left join cliente c on gu.id_cliente = c.id
                 inner join barbearia b on f.id_barbearia = b.id
-                left join cliente c on c.id_usuario = u.id
-                where u.login =  ?              
+                where u.login = ?              
                 """;
 
         return jdbcTemplate.queryForObject(buscarBarbeariaPorLogin, new Object[]{login},
