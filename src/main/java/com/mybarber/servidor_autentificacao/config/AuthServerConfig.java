@@ -5,8 +5,10 @@ import com.mybarber.servidor_autentificacao.repository.UsuarioDAO;
 import com.mybarber.servidor_autentificacao.security.UsuarioPrincipalDetalhesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -80,6 +82,7 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         return tokenServices;
     }
 
+    
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
@@ -163,4 +166,6 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     private KeyStoreKeyFactory keyStoreKeyFactory(SecurityProperties.JwtProperties jwtProperties) {
         return new KeyStoreKeyFactory(jwtProperties.getKeyStore(), jwtProperties.getKeyStorePassword().toCharArray());
     }
+
+
 }

@@ -54,17 +54,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     public Map<String, String> buscarBarbeariaPorLogin(String login) {
 
         var buscarBarbeariaPorLogin = """
-                select b.id id_barbearia, b.descricao descricao_barbearia,
-                CASE WHEN @f.id is not null THEN f.id ELSE null END as id_funcionario,
-                CASE WHEN @f.id is not null THEN f.nome ELSE null END as nome_funcionario,
-                CASE WHEN @c.id is not null THEN c.id ELSE null END as id_cliente,
-                CASE WHEN @c.id is not null THEN c.nome ELSE null END as nome_cliente
+                select b.id id_barbearia, b.descricao descricao_barbearia,\s
+                f.id id_funcionario,f.nome nome_funcionario,f.cargo,
+                c.id id_cliente,c.nome nome_cliente,
+                u.login
                 from usuario u
                 inner join gerenciar_usuario gu on gu.id_usuario = u.id
                 left join funcionario f on gu.id_funcionario = f.id
                 left join cliente c on gu.id_cliente = c.id
                 inner join barbearia b on f.id_barbearia = b.id
-                where u.login = ?              
+                where u.login  = ?              
                 """;
 
         return jdbcTemplate.queryForObject(buscarBarbeariaPorLogin, new Object[]{login},
@@ -73,10 +72,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
                     var idFuncioanario = rs.getObject("id_funcionario");
                     if (idFuncioanario != null) {
-                        results.put("idBarbearia", rs.getString("id_barbearia"));
+                            results.put("idBarbearia", rs.getString("id_barbearia"));
                         results.put("nomeBarbearia", rs.getString("descricao_barbearia"));
                         results.put("idFuncionario", idFuncioanario.toString());
                         results.put("nomeFuncionario", rs.getString("nome_funcionario"));
+                        results.put("cargo", rs.getString("cargo"));
+                        results.put("usuario", rs.getString("login"));
                         return results;
                     } else if (rs.getObject("id_cliente") != null) {
                         results.put("idCliente", rs.getString("id_cliente"));
