@@ -82,15 +82,19 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
         return tokenServices;
     }
 
-    
+
 
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
 
+        if (jwtAccessTokenConverter != null) {
+            return jwtAccessTokenConverter;
+        }
+
         final JwtAccessTokenConverter converter = new JwtAccessTokenConverter() {
             @Override
             public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
-                if (authentication.getOAuth2Request().getGrantType().equalsIgnoreCase("password")) {
+
                     final Map<String, Object> additionalInfo = new HashMap<String, Object>();
 
                     var dadosUsuario = usuarioDAO.buscarBarbeariaPorLogin(authentication.getName());
@@ -103,24 +107,20 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
                     ((DefaultOAuth2AccessToken) accessToken)
                             .setAdditionalInformation(additionalInfo);
-                }
+
                 accessToken = super.enhance(accessToken, authentication);
                 ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(new HashMap<>());
                 return accessToken;
             }
         };
 
-        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mykeystore.jks"), "46446895".toCharArray());
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("servercert"));
+        SecurityProperties.JwtProperties jwtProperties = securityProperties.getJwt();
+        KeyPair keyPair = keyPair(jwtProperties, keyStoreKeyFactory(jwtProperties));
+        converter.setKeyPair(keyPair);
         return converter;
 
-       /* if (jwtAccessTokenConverter != null) {
-            return jwtAccessTokenConverter;
-        }
 
-
-
-        SecurityProperties.JwtProperties jwtProperties = securityProperties.getJwt();
+        /*SecurityProperties.JwtProperties jwtProperties = securityProperties.getJwt();
         KeyPair keyPair = keyPair(jwtProperties, keyStoreKeyFactory(jwtProperties));
 
         jwtAccessTokenConverter = new JwtAccessTokenConverter();

@@ -54,7 +54,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     public Map<String, String> buscarBarbeariaPorLogin(String login) {
 
         var buscarBarbeariaPorLogin = """
-                select b.id id_barbearia, b.descricao descricao_barbearia,\s
+                select b.id id_barbearia, b.nome descricao_barbearia,\s
                 f.id id_funcionario,f.nome nome_funcionario,f.cargo,
                 c.id id_cliente,c.nome nome_cliente,
                 u.login
