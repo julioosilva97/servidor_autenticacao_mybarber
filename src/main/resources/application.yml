@@ -15,6 +15,6 @@ spring:
 
 #Banco de dados
   datasource:
-    url: jdbc:postgresql://localhost:5432/myBarber
+    url: jdbc:postgresql://localhost:5432/mybarber_db
     username: postgres
     password: postgres

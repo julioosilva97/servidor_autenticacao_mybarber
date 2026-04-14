@@ -18,8 +18,10 @@ package com.mybarber.servidor_autentificacao.config;
   @Autowired private PasswordEncoder passwordEncoder;
   
   @PostConstruct public void init() {
-  
-  jdbcTemplate.update(salvarSenha,passwordEncoder.encode("123"));
+    String senha = passwordEncoder.encode("123");
+    System.out.println(senha);
+    jdbcTemplate.update(salvarSenha,senha);
+    System.out.println(passwordEncoder.matches("123", senha));
   
   
   } }

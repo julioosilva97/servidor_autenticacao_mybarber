@@ -23,13 +23,11 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public Usuario buscarPorLogin(String login) {
 
-        var buscarPorLogin = """
-                		select u.id, u.login, u.senha, u.ativo,
-                		p.id id_perfil,p.descricao descricao_perfil from usuario u
-                		inner join usuario_perfil up on up.id_usuario = u.id
-                		inner join perfil p on up.id_perfil = p.id
-                		where login = ?
-                """;
+        var buscarPorLogin = "select u.id, u.login, u.senha, u.ativo, " +
+                "p.id id_perfil, p.descricao descricao_perfil from usuario u " +
+                "inner join usuario_perfil up on up.id_usuario = u.id " +
+                "inner join perfil p on up.id_perfil = p.id " +
+                "where login = ?";
 
         var usuarios = jdbcTemplate.query(buscarPorLogin, new Object[]{login},
                 (rs, rowNum) -> new Usuario(rs.getInt("id"),
@@ -53,18 +51,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public Map<String, String> buscarBarbeariaPorLogin(String login) {
 
-        var buscarBarbeariaPorLogin = """
-                select b.id id_barbearia, b.nome descricao_barbearia,\s
-                f.id id_funcionario,f.nome nome_funcionario,f.cargo,
-                c.id id_cliente,c.nome nome_cliente,
-                u.login
-                from usuario u
-                inner join gerenciar_usuario gu on gu.id_usuario = u.id
-                left join funcionario f on gu.id_funcionario = f.id
-                left join cliente c on gu.id_cliente = c.id
-                inner join barbearia b on f.id_barbearia = b.id
-                where u.login  = ?              
-                """;
+        var buscarBarbeariaPorLogin = "select b.id id_barbearia, b.nome descricao_barbearia, " +
+                "f.id id_funcionario, f.nome nome_funcionario, f.cargo, " +
+                "c.id id_cliente, c.nome nome_cliente, " +
+                "u.login " +
+                "from usuario u " +
+                "inner join gerenciar_usuario gu on gu.id_usuario = u.id " +
+                "left join funcionario f on gu.id_funcionario = f.id " +
+                "left join cliente c on gu.id_cliente = c.id " +
+                "inner join barbearia b on f.id_barbearia = b.id " +
+                "where u.login = ?";
 
         return jdbcTemplate.queryForObject(buscarBarbeariaPorLogin, new Object[]{login},
                 (rs, rowNum) -> {
@@ -93,12 +89,10 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
     private Collection<GrantedAuthority> buscarPermissoes(Perfil perfil) {
 
-        var buscarPorPerfil = """
-                select p.descricao from permissao p
-                inner join perfil_permissao pp on pp.id_permissao = p.id
-                inner join perfil per on pp.id_perfil = per.id
-                where per.id = ?
-                """;
+        var buscarPorPerfil = "select p.descricao from permissao p " +
+                "inner join perfil_permissao pp on pp.id_permissao = p.id " +
+                "inner join perfil per on pp.id_perfil = per.id " +
+                "where per.id = ?";
 
         Collection<GrantedAuthority> permissoes = new ArrayList<>();
 
